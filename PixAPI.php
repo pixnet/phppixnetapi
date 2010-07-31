@@ -57,6 +57,11 @@ class PixAPI
 
     }
 
+    public function blog_delete_article($article_id)
+    {
+	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles/' . intval($article_id), array('method' => 'delete')));
+    }
+
     public function __construct($consumer_key, $consumer_secret)
     {
 	$this->_consumer_key = $consumer_key;

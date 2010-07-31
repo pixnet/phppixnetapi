@@ -381,6 +381,9 @@ class PixAPI
 	    }
 	}
 	$message = $request->send();
+	if ($message->getResponseCode() !== 200) {
+	    throw new PixAPIException($message->getBody(), $message->getResponseCode());
+	}
 	return $message->getBody();
     }
 }

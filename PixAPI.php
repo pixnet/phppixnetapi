@@ -372,6 +372,9 @@ class PixAPI
 	} else {
 	    $request = new HttpRequest($url, HttpRequest::METH_GET);
 	}
+
+	$request->setOptions($this->_http_options);
+
 	$request->setHeaders(array('Authorization' => $oauth_header));
 	if (isset($options['post_params'])) {
 	    $request->setPostFields($options['post_params']);
@@ -386,6 +389,21 @@ class PixAPI
 	    throw new PixAPIException($message->getBody(), $message->getResponseCode());
 	}
 	return $message->getBody();
+    }
+
+    protected $_http_options = array();
+
+    /**
+     * setHttpOptions 設定 HTTP options
+     * 
+     * @link http://php.net/manual/en/http.request.options.php
+     * @param array $array 
+     * @access public
+     * @return void
+     */
+    public function setHttpOptions($array)
+    {
+	$this->_http_options = array_merge($array, $this->_http_options);
     }
 }
 

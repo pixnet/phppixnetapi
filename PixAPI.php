@@ -40,6 +40,11 @@ class PixAPI
 	return json_decode($this->_http('http://emma.pixnet.cc/blog/categories/' . intval($id), array('method' => 'delete')));
     }
 
+    public function blog_get_articles($page = 1, $per_page = 100, $category_id = null)
+    {
+	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles', array('get_params' => array('page' => $page, 'per_page' => $per_page, 'category_id' => $category_id))));
+    }
+
     public function __construct($consumer_key, $consumer_secret)
     {
 	$this->_consumer_key = $consumer_key;
@@ -77,7 +82,7 @@ class PixAPI
 	$this->_request_auth_url = $args['xoauth_request_auth_url'];
     }
 
-    public function getAuthURL($callback_url)
+    public function getAuthURL($callback_url = null)
     {
 	if ($callback_url != $this->_request_callback_url) {
 	    $this->_request_expire = null;
@@ -137,16 +142,6 @@ class PixAPI
 	    }
 	}
 
-	// 如果有指定 get_params, 直接補在網址後面
-	if (isset($options['get_params'])) {
-	    if (false !== strpos('?', $url)) {
-		$url .= '&';
-	    } else {
-		$url .= '?';
-	    }
-	    $url .= http_build_query($options['get_params']);
-	}
-
 	// METHOD 部分
 	$parts = array();
 	if (isset($options['method'])) {
@@ -158,8 +153,30 @@ class PixAPI
 	}
 	$parts[] = urlencode($url);
 
+	// 如果有指定 get_params, 直接補在網址後面
+	if (isset($options['get_params'])) {
+	    if (false !== strpos('?', $url)) {
+		$url .= '&';
+	    } else {
+		$url .= '?';
+	    }
+	    $url .= http_build_query($options['get_params']);
+	}
+
+	if (isset($options['post_params'])) {
+	    foreach ($options['post_params'] as $key => $value) {
+		if (is_null($value)) unset($options['post_params'][$key]);
+	    }
+	}
+
+	if (isset($options['get_params'])) {
+	    foreach ($options['get_params'] as $key => $value) {
+		if (is_null($value)) unset($options['get_params'][$key]);
+	    }
+	}
 	// 參數部分
 	$args = isset($options['post_params']) ? array_merge($options['post_params'], $oauth_args) : $oauth_args;
+	$args = isset($options['get_params']) ? array_merge($options['get_params'], $oauth_args) : $oauth_args;
 	ksort($args);
 	$args_parts = array();
 	foreach ($args as $key => $value) {

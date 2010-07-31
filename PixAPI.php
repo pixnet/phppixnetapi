@@ -19,6 +19,7 @@ class PixAPI
 {
     const REQUEST_TOKEN_URL = 'http://emma.pixnet.cc/oauth/request_token';
     const ACCESS_TOKEN_URL = 'http://emma.pixnet.cc/oauth/access_token';
+    const AUTHORIZATION_URL = 'http://emma.pixnet.cc/oauth/authorize';
 
     protected $_consumer_key;
     protected $_consumer_secret;
@@ -347,7 +348,7 @@ class PixAPI
 	$this->_token = $args['oauth_token'];
 	$this->_secret = $args['oauth_token_secret'];
 	$this->_request_expire = time() + $args['oauth_expires_in'];
-	$this->_request_auth_url = $args['xoauth_request_auth_url'];
+	$this->_request_auth_url = self::AUTHORIZATION_URL . '?oauth_token=' . $args['oauth_token'];
     }
 
     /**

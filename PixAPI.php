@@ -152,6 +152,139 @@ class PixAPI
     }
 
     /**
+     * album_get_sets 取得相簿列表
+     * 
+     * @param int $page 第幾頁，預設是第一頁
+     * @param int $per_page 一頁幾筆，預設一百筆
+     * @access public
+     * @return array 相簿資料
+     */
+    public function album_get_sets($page = 1, $per_page = 100)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/', array('get_params' => array('page' => $page, 'per_page' => $per_page))));
+    }
+
+    /**
+     * album_add_set 新增一本相簿
+     * 
+     * @param mixed $title  相簿標題
+     * @param mixed $description  相簿描述
+     * @param array $options  title => 字串
+     *                        description => 字串
+     *                        permission => 0: 完全公開 / 1: 好友相簿 / 2: 圈友相簿 / 3: 密碼相簿 / 4: 隱藏相簿 / 5: 好友群組相簿
+     *                        category_id => 數字, 相簿分類, 預設為0
+     *                        is_lockright => 是否鎖右鍵, 1 為上鎖, 預設為0
+     *                        continent => location:洲
+     *                        country => location:國家
+     *                        area => location:地區
+     *                        allow_cc => 0: copyrighted / 1: cc (license 相關參數)
+     *                        cancomment => 0: 禁止留言 / 1: 開放留言 / 2: 限好友留言 / 3: 限會員留言
+     * @access public
+     * @return int id 相簿 id
+     */
+    public function album_add_set($title, $description, $options = array())
+    {
+	$params = array('title' => $title, 'description' => $description);
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets', array('post_params' => array_merge($params, $options))))->set->id;
+    }
+
+    /**
+     * album_edit_set 修改相簿資訊
+     * 
+     * @param int $set_id 相簿 id
+     * @param string $title 相簿標題
+     * @param string $description 相簿描述
+     * @param array $options 同 album_add_set 的 $options
+     * @access public
+     * @return void
+     */
+    public function album_edit_set($set_id, $title, $description, $options = array())
+    {
+	$params = array('title' => $title, 'description' => $description);
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id), array('post_params' => array_merge($params, $options))));
+    }
+
+    /**
+     * album_delete_set 刪除一本相簿(裡面照片也會全部刪光)
+     * 
+     * @param int $set_id 相簿 id
+     * @access public
+     * @return void
+     */
+    public function album_delete_set($set_id)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id), array('method' => 'delete')));
+    }
+
+    /**
+     * album_publish_set 發送發布通知(Ex: facebook上我更新了一本相簿)
+     * 
+     * @param int $set_id 相簿 ID
+     * @access public
+     * @return void
+     */
+    public function album_publish_set($set_id)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/publish', array('method' => 'post')));
+    }
+
+    /**
+     * album_get_elements 取得某本相簿內的相片列表
+     * 
+     * @param int $set_id  相簿 ID
+     * @param int $page 第幾頁，預設為第一頁
+     * @param int $per_page 一頁有幾筆，預設 100 筆
+     * @access public
+     * @return array 所有照片資料
+     */
+    public function album_get_elements($set_id, $page = 1, $per_page = 100)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements', array('get_params' => array('page' => $page, 'per_page' => $per_page))));
+	
+    }
+
+    /**
+     * album_get_element_info 取得某一張照片/影片的資訊
+     * 
+     * @param int $set_id 相簿 ID
+     * @param int $element_id 照片 ID
+     * @access public
+     * @return array 相片/影片資訊
+     */
+    public function album_get_element_info($set_id, $element_id)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements/' . intval($element_id)));
+    }
+
+    /**
+     * album_add_element 上傳一張新照片
+     * 
+     * @param int $set_id 上傳到相簿 ID
+     * @param string $file_path 上傳的檔案
+     * @param string $title 上傳的圖片標題
+     * @param string $description 上傳的圖片描述
+     * @access public
+     * @return array 上傳的完整資訊
+     */
+    public function album_add_element($set_id, $file_path, $title, $description)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements', array('post_params' => array('title' => $title, 'description' => $description), 'files' => array('upload_file' => $file_path))));
+    }
+
+    /**
+     * album_sort_elements 修改相簿圖片影片排序
+     *
+     * @param int $set_id 相簿 ID
+     * @param array $element_ids 包含相片 ID 的 array ，越前面表示越優先
+     * @access public
+     * @return array 回傳資訊
+     */
+    public function album_sort_elements($set_id, $element_ids)
+    {
+	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements/position', array('post_params' => implode('-', $element_ids))));
+    }
+
+    /**
      * __construct 
      * 
      * @param string $consumer_key 
@@ -336,7 +469,9 @@ class PixAPI
 	    }
 	}
 	// 參數部分
-	$args = isset($options['post_params']) ? array_merge($options['post_params'], $oauth_args) : $oauth_args;
+	$args = $oauth_args;
+	// XXX 有設定 files 時， POST 資訊就不會被 check 到
+	$args = (!isset($options['files']) and isset($options['post_params'])) ? array_merge($options['post_params'], $args) : $oauth_args;
 	$args = isset($options['get_params']) ? array_merge($options['get_params'], $args) : $args;
 	ksort($args);
 	$args_parts = array();

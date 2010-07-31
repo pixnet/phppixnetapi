@@ -38,7 +38,7 @@ class PixAPI
      */
     public function user_get_account()
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/account'));
+	return json_decode($this->http('http://emma.pixnet.cc/account'));
     }
 
     /**
@@ -49,7 +49,7 @@ class PixAPI
      */
     public function blog_get_categories()
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/categories'));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/categories'));
     }
 
     /**
@@ -62,7 +62,7 @@ class PixAPI
      */
     public function blog_add_category($name, $description)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/categories', array('post_params' => array('name' => $name, 'description' => $description))))->category->id;
+	return json_decode($this->http('http://emma.pixnet.cc/blog/categories', array('post_params' => array('name' => $name, 'description' => $description))))->category->id;
     }
 
     /**
@@ -76,7 +76,7 @@ class PixAPI
      */
     public function blog_edit_category($id, $name, $description)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/categories/' . intval($id), array('post_params' => array('name' => $name, 'description' => $description))));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/categories/' . intval($id), array('post_params' => array('name' => $name, 'description' => $description))));
     }
 
     /**
@@ -88,7 +88,7 @@ class PixAPI
      */
     public function blog_delete_category($id)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/categories/' . intval($id), array('method' => 'delete')));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/categories/' . intval($id), array('method' => 'delete')));
     }
 
     /**
@@ -102,7 +102,7 @@ class PixAPI
      */
     public function blog_get_articles($page = 1, $per_page = 100, $category_id = null)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles', array('get_params' => array('page' => $page, 'per_page' => $per_page, 'category_id' => $category_id))));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/articles', array('get_params' => array('page' => $page, 'per_page' => $per_page, 'category_id' => $category_id))));
     }
 
     /**
@@ -114,7 +114,7 @@ class PixAPI
      */
     public function blog_get_article($article_id)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles/' . intval($article_id)));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/articles/' . intval($article_id)));
     }
 
     /**
@@ -135,7 +135,7 @@ class PixAPI
     public function blog_add_article($title, $body, $options = array())
     {
 	$params = array('title' => $title, 'body' => $body);
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles', array('post_params' => array_merge($params, $options))))->article->id;
+	return json_decode($this->http('http://emma.pixnet.cc/blog/articles', array('post_params' => array_merge($params, $options))))->article->id;
 
     }
 
@@ -148,7 +148,7 @@ class PixAPI
      */
     public function blog_delete_article($article_id)
     {
-	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles/' . intval($article_id), array('method' => 'delete')));
+	return json_decode($this->http('http://emma.pixnet.cc/blog/articles/' . intval($article_id), array('method' => 'delete')));
     }
 
     /**
@@ -204,9 +204,9 @@ class PixAPI
 	}
 
 	if (is_null($this->_request_callback_url)) {
-	    $message = $this->_http(self::REQUEST_TOKEN_URL);
+	    $message = $this->http(self::REQUEST_TOKEN_URL);
 	} else {
-	    $message = $this->_http(self::REQUEST_TOKEN_URL, array('oauth_params' => array('oauth_callback' => $this->_request_callback_url)));
+	    $message = $this->http(self::REQUEST_TOKEN_URL, array('oauth_params' => array('oauth_callback' => $this->_request_callback_url)));
 	}
 	$args = array();
 	parse_str($message, $args);
@@ -247,7 +247,7 @@ class PixAPI
      */
     public function getAccessToken($verifier_token)
     {
-	$message = $this->_http(self::ACCESS_TOKEN_URL, array('oauth_params' => array('oauth_verifier' => $verifier_token)));
+	$message = $this->http(self::ACCESS_TOKEN_URL, array('oauth_params' => array('oauth_verifier' => $verifier_token)));
 	$args = array();
 	parse_str($message, $args);
 
@@ -271,19 +271,20 @@ class PixAPI
     }
 
     /**
-     * _http 
+     * http 對 $url 作 oauth api 存取
      * 
      * @param mixed $url 
      * @param array $options 
-     *		method: get/post/delete, 
-     *		get_params: array(), 
-     *		post_params: array(), 
-     *		files:array(),
-     *		oauth_params: array()
-     * @access protected
-     * @return void
+     *		method: get/post/delete 要使用的 METHOD
+     *		get_params: array()  GET 參數
+     *		post_params: array() POST 參數
+     *		files:array() 需要上傳的檔案
+     *		oauth_params: array() 其他的 OAUTH 變數
+     * @access public
+     * @return string url 回傳內容
+     * @throw PixAPIException
      */
-    protected function _http($url, $options = array())
+    public function http($url, $options = array())
     {
 	// Oauth 認證部分
 	$oauth_args = array();

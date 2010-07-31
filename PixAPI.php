@@ -45,6 +45,11 @@ class PixAPI
 	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles', array('get_params' => array('page' => $page, 'per_page' => $per_page, 'category_id' => $category_id))));
     }
 
+    public function blog_get_article($article_id)
+    {
+	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles/' . intval($article_id)));
+    }
+
     public function __construct($consumer_key, $consumer_secret)
     {
 	$this->_consumer_key = $consumer_key;

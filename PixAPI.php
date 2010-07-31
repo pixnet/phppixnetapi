@@ -50,6 +50,13 @@ class PixAPI
 	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles/' . intval($article_id)));
     }
 
+    public function blog_add_article($title, $body, $options = array())
+    {
+	$params = array('title' => $title, 'body' => $body);
+	return json_decode($this->_http('http://emma.pixnet.cc/blog/articles', array('post_params' => array_merge($params, $options))));
+
+    }
+
     public function __construct($consumer_key, $consumer_secret)
     {
 	$this->_consumer_key = $consumer_key;
@@ -181,7 +188,7 @@ class PixAPI
 	}
 	// 參數部分
 	$args = isset($options['post_params']) ? array_merge($options['post_params'], $oauth_args) : $oauth_args;
-	$args = isset($options['get_params']) ? array_merge($options['get_params'], $oauth_args) : $oauth_args;
+	$args = isset($options['get_params']) ? array_merge($options['get_params'], $args) : $args;
 	ksort($args);
 	$args_parts = array();
 	foreach ($args as $key => $value) {

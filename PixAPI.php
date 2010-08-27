@@ -471,8 +471,9 @@ class PixAPI
 	}
 	// 參數部分
 	$args = $oauth_args;
-	// XXX 有設定 files 時， POST 資訊就不會被 check 到
-	$args = (!isset($options['files']) and isset($options['post_params'])) ? array_merge($options['post_params'], $args) : $oauth_args;
+	if (is_array($options['post_params'])) {
+	    $args = array_merge($options['post_params'], $args);
+	}
 	$args = isset($options['get_params']) ? array_merge($options['get_params'], $args) : $args;
 	ksort($args);
 	$args_parts = array();

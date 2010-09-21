@@ -446,7 +446,7 @@ class PixAPI
 	} else {
 	    $parts[] = 'GET';
 	}
-	$parts[] = urlencode($url);
+	$parts[] = rawurlencode($url);
 
 	// 如果有指定 get_params, 直接補在網址後面
 	if (isset($options['get_params'])) {
@@ -478,16 +478,16 @@ class PixAPI
 	ksort($args);
 	$args_parts = array();
 	foreach ($args as $key => $value) {
-	    $args_parts[] = urlencode($key) . '=' . urlencode($value);
+	    $args_parts[] = rawurlencode($key) . '=' . rawurlencode($value);
 	}
-	$parts[] = urlencode(implode('&', $args_parts));
+	$parts[] = rawurlencode(implode('&', $args_parts));
 
 	$base_string = implode('&', $parts);
 
 	// 產生 oauth_signature
 	$key_parts = array(
-	    urlencode($this->_consumer_secret),
-	    is_null($this->_secret) ? '' : urlencode($this->_secret)
+	    rawurlencode($this->_consumer_secret),
+	    is_null($this->_secret) ? '' : rawurlencode($this->_secret)
 	);
 	$key = implode('&', $key_parts);
 	$oauth_args['oauth_signature'] = base64_encode(hash_hmac('sha1', $base_string, $key, true));
@@ -496,7 +496,7 @@ class PixAPI
 	$first = true;
 	foreach ($oauth_args as $k => $v) {
 	    if (substr($k, 0, 5) != "oauth") continue;
-	    $oauth_header .= ($first ? '' : ',') . urlencode($k) . '="' . urlencode($v) . '"';
+	    $oauth_header .= ($first ? '' : ',') . rawurlencode($k) . '="' . rawurlencode($v) . '"';
 	    $first = false;
 	}
 

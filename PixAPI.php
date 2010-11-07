@@ -446,7 +446,6 @@ class PixAPI
 	} else {
 	    $parts[] = 'GET';
 	}
-	$parts[] = rawurlencode($url);
 
 	// 如果有指定 get_params, 直接補在網址後面
 	if (isset($options['get_params'])) {
@@ -457,6 +456,7 @@ class PixAPI
 	    }
 	    $url .= http_build_query($options['get_params']);
 	}
+	$parts[] = rawurlencode($url);
 
 	if (isset($options['post_params'])) {
 	    foreach ($options['post_params'] as $key => $value) {

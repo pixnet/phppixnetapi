@@ -448,7 +448,7 @@ class PixAPI
 	}
 
 	// 如果有指定 get_params, 直接補在網址後面
-	if (isset($options['get_params'])) {
+	if (isset($options['get_params']) and $options['get_params']) {
 	    if (false !== strpos('?', $url)) {
 		$url .= '&';
 	    } else {

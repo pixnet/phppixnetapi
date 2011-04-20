@@ -254,7 +254,7 @@ class PixAPI
      */
     public function album_get_element_info($set_id, $element_id)
     {
-	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements/' . intval($element_id)));
+	return json_decode($this->http('http://emma.pixnet.cc/album/elements/' . intval($element_id)));
     }
 
     /**

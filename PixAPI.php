@@ -1,19 +1,19 @@
 <?php
 
 /**
- * PixAPIException 
- * 
+ * PixAPIException
+ *
  * @uses Exception
- * @author Shang-Rung Wang <ronnywang@gmail.com> 
+ * @author Shang-Rung Wang <ronnywang@gmail.com>
  */
 class PixAPIException extends Exception
 {
 }
 
 /**
- * PixAPI 
- * 
- * @author Shang-Rung Wang <ronnywang@gmail.com> 
+ * PixAPI
+ *
+ * @author Shang-Rung Wang <ronnywang@gmail.com>
  */
 class PixAPI
 {
@@ -33,7 +33,7 @@ class PixAPI
 
     /**
      * user_get_account 取得已登入使用者的資料
-     * 
+     *
      * @access public
      * @return array 使用者資料
      */
@@ -44,7 +44,7 @@ class PixAPI
 
     /**
      * blog_get_categories 取得目前部落格的分類
-     * 
+     *
      * @access public
      * @return array 各部落格分類資料
      */
@@ -55,7 +55,7 @@ class PixAPI
 
     /**
      * blog_add_category 增加部落格分類
-     * 
+     *
      * @param string $name 分類名稱
      * @param string $description 分類描述
      * @access public
@@ -68,7 +68,7 @@ class PixAPI
 
     /**
      * blog_edit_category 編輯部落格分類(需要modify權限)
-     * 
+     *
      * @param int $id 部落格分類 id
      * @param string $name 分類名稱
      * @param string $description 分類描述
@@ -82,8 +82,8 @@ class PixAPI
 
     /**
      * blog_delete_category 刪除部落格分類(需要modify權限)
-     * 
-     * @param int $id 
+     *
+     * @param int $id
      * @access public
      * @return void
      */
@@ -94,7 +94,7 @@ class PixAPI
 
     /**
      * blog_get_articles 取得部落格文章列表
-     * 
+     *
      * @param int $page 第幾頁，預設為第一頁
      * @param int $per_page 一頁有幾筆？預設 100 筆
      * @param int/null $category_id 部落格分類，null時表示全部
@@ -108,10 +108,10 @@ class PixAPI
 
     /**
      * blog_get_article 取得單篇文章資料
-     * 
-     * @param int $article_id 
+     *
+     * @param int $article_id
      * @access public
-     * @return array 單篇文章資料 
+     * @return array 單篇文章資料
      */
     public function blog_get_article($article_id)
     {
@@ -120,7 +120,7 @@ class PixAPI
 
     /**
      * blog_add_article 部落格新增文章
-     * 
+     *
      * @param string $title 標題
      * @param string $body 內容
      * @param array $options   status 文章狀態, 1表示草稿, 2表示公開, 4表示隱藏
@@ -142,8 +142,8 @@ class PixAPI
 
     /**
      * blog_delete_article 刪除一篇部落格文章(需要modify權限)
-     * 
-     * @param int $article_id 
+     *
+     * @param int $article_id
      * @access public
      * @return void
      */
@@ -154,7 +154,7 @@ class PixAPI
 
     /**
      * album_get_sets 取得相簿列表
-     * 
+     *
      * @param int $page 第幾頁，預設是第一頁
      * @param int $per_page 一頁幾筆，預設一百筆
      * @access public
@@ -167,7 +167,7 @@ class PixAPI
 
     /**
      * album_add_set 新增一本相簿
-     * 
+     *
      * @param mixed $title  相簿標題
      * @param mixed $description  相簿描述
      * @param array $options  title => 字串
@@ -191,7 +191,7 @@ class PixAPI
 
     /**
      * album_edit_set 修改相簿資訊
-     * 
+     *
      * @param int $set_id 相簿 id
      * @param string $title 相簿標題
      * @param string $description 相簿描述
@@ -207,7 +207,7 @@ class PixAPI
 
     /**
      * album_delete_set 刪除一本相簿(裡面照片也會全部刪光)
-     * 
+     *
      * @param int $set_id 相簿 id
      * @access public
      * @return void
@@ -219,7 +219,7 @@ class PixAPI
 
     /**
      * album_publish_set 發送發布通知(Ex: facebook上我更新了一本相簿)
-     * 
+     *
      * @param int $set_id 相簿 ID
      * @access public
      * @return void
@@ -231,7 +231,7 @@ class PixAPI
 
     /**
      * album_get_elements 取得某本相簿內的相片列表
-     * 
+     *
      * @param int $set_id  相簿 ID
      * @param int $page 第幾頁，預設為第一頁
      * @param int $per_page 一頁有幾筆，預設 100 筆
@@ -241,12 +241,12 @@ class PixAPI
     public function album_get_elements($set_id, $page = 1, $per_page = 100)
     {
 	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements', array('get_params' => array('page' => $page, 'per_page' => $per_page))));
-	
+
     }
 
     /**
      * album_get_element_info 取得某一張照片/影片的資訊
-     * 
+     *
      * @param int $set_id 相簿 ID
      * @param int $element_id 照片 ID
      * @access public
@@ -259,7 +259,7 @@ class PixAPI
 
     /**
      * album_add_element 上傳一張新照片
-     * 
+     *
      * @param int $set_id 上傳到相簿 ID
      * @param string $file_path 上傳的檔案
      * @param string $title 上傳的圖片標題
@@ -286,10 +286,10 @@ class PixAPI
     }
 
     /**
-     * __construct 
-     * 
-     * @param string $consumer_key 
-     * @param string $consumer_secret 
+     * __construct
+     *
+     * @param string $consumer_key
+     * @param string $consumer_secret
      * @access public
      * @return void
      */
@@ -301,9 +301,9 @@ class PixAPI
 
     /**
      * setToken 設定 token 和 secret ，在取得 access token 和操作需要驗證的動作前都要做這個
-     * 
-     * @param string $token 
-     * @param string $secret 
+     *
+     * @param string $token
+     * @param string $secret
      * @access public
      * @return void
      */
@@ -315,8 +315,8 @@ class PixAPI
 
     /**
      * setRequestCallback 指定在 Authorization 之後要導回的網址
-     * 
-     * @param string $callback_url 
+     *
+     * @param string $callback_url
      * @access public
      * @return void
      */
@@ -327,7 +327,7 @@ class PixAPI
 
     /**
      * _get_request_token 取得 Request Token ，若是已經取得過而且沒有過期的話就不會再取一次
-     * 
+     *
      * @access protected
      * @return void
      */
@@ -354,7 +354,7 @@ class PixAPI
     /**
      * getAuthURL 取得 Authorization 網址，
      * 此 function 會自動作 setToken($request_token, $request_token_secret) 的動作
-     * 
+     *
      * @param string/null $callback_url 可以指定 Authorization 完後導到哪裡
      * @access public
      * @return string Authorization 網址
@@ -371,7 +371,7 @@ class PixAPI
 
     /**
      * getAccessToken 取得 Access Token ，在使用此 function 前需要先呼叫 setToken($request_token, $request_token_secret)
-     * 
+     *
      * @param string $verifier_token 在 Authorization 頁面成功認證後，回傳的 verifier_token
      * @access public
      * @return array(
@@ -392,9 +392,9 @@ class PixAPI
     }
 
     /**
-     * getRequestTokenPair 取得 Request Token 
+     * getRequestTokenPair 取得 Request Token
      * 此 function 會自動作 setToken($request_token, $request_token_secret) 的動作
-     * 
+     *
      * @access public
      * @return void
      */
@@ -406,9 +406,9 @@ class PixAPI
 
     /**
      * http 對 $url 作 oauth api 存取
-     * 
-     * @param mixed $url 
-     * @param array $options 
+     *
+     * @param mixed $url
+     * @param array $options
      *		method: get/post/delete 要使用的 METHOD
      *		get_params: array()  GET 參數
      *		post_params: array() POST 參數
@@ -532,9 +532,9 @@ class PixAPI
 
     /**
      * setHttpOptions 設定 HTTP options
-     * 
+     *
      * @link http://php.net/manual/en/http.request.options.php
-     * @param array $array 
+     * @param array $array
      * @access public
      * @return void
      */

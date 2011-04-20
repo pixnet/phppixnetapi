@@ -456,7 +456,7 @@ class PixAPI
 	    }
 	    $url .= http_build_query($options['get_params']);
 	}
-	$parts[] = rawurlencode($url);
+	$parts[] = rawurlencode(preg_replace('/\?.*$/', '', $url));
 
 	if (isset($options['post_params'])) {
 	    foreach ($options['post_params'] as $key => $value) {

@@ -43,6 +43,8 @@ class PixAPI
     protected $_token = null;
     protected $_secret = null;
 
+    protected $_http_options = array();
+
     /**
      * user_get_account 取得已登入使用者的資料
      *

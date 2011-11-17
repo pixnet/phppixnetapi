@@ -512,6 +512,13 @@ class PixAPI
 	    $first = false;
 	}
 
+        if (function_exists('http_get')) {
+            return $this->_httpRequest($url, $oauth_header, $options);
+        }
+    }
+
+    private function _httpRequest($url, $oauth_header, $options = array())
+    {
 	if (isset($options['method'])) {
 	    $method_map = array('get' => HttpRequest::METH_GET, 'head' => HttpRequest::METH_HEAD, 'post' => HttpRequest::METH_POST, 'put' => HttpRequest::METH_PUT, 'delete' => HttpRequest::METH_DELETE);
 

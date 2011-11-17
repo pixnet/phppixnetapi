@@ -44,6 +44,7 @@ class PixAPI
     protected $_secret = null;
 
     protected $_http_options = array();
+    protected $_curl_options = array();
 
     /**
      * user_get_account 取得已登入使用者的資料
@@ -517,6 +518,10 @@ class PixAPI
         if (function_exists('http_get')) {
             return $this->_httpRequest($url, $oauth_header, $options);
         }
+
+        if (function_exists('curl_init')) {
+            return $this->_curl($url, $oauth_header, $options);
+        }
     }
 
     private function _httpRequest($url, $oauth_header, $options = array())
@@ -549,7 +554,43 @@ class PixAPI
 	return $message->getBody();
     }
 
-    protected $_http_options = array();
+    private function _curl($url, $oauth_header, $options = array())
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: ' . $oauth_header, 'Expect: '));
+
+        curl_setopt_array($ch, $this->_curl_options);
+
+	if (isset($options['method'])) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($options['method']));
+	} elseif (isset($options['post_params']) or isset($options['files'])) {
+            curl_setopt($ch, CURLOPT_POST, true);
+	}
+
+	if (isset($options['post_params'])) {
+            if (isset($options['files'])) {
+                foreach ($options['files'] as $name => $file) {
+                    $options['post_params'][$name] = '@' . $file;
+                }
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $options['post_params']);
+            } else {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($options['post_params']));
+            }
+	}
+
+        $message = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (200 != $httpCode) {
+	    throw new PixAPIException($message, $httpCode);
+        }
+        curl_close($ch);
+
+	return $message;
+    }
 
     /**
      * setHttpOptions 設定 HTTP options
@@ -562,6 +603,19 @@ class PixAPI
     public function setHttpOptions($array)
     {
 	$this->_http_options = array_merge($array, $this->_http_options);
+    }
+
+    /**
+     * setCurlOptions 設定 CURL options
+     *
+     * @link http://php.net/manual/en/function.curl-setopt-array.php
+     * @param array $array
+     * @access public
+     * @return void
+     */
+    public function setCurlOptions($array)
+    {
+	$this->_curl_options = $array;
     }
 }
 

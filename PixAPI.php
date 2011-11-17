@@ -522,6 +522,8 @@ class PixAPI
         if (function_exists('curl_init')) {
             return $this->_curl($url, $oauth_header, $options);
         }
+
+        die('請安裝 curl 或 pecl-http');
     }
 
     private function _httpRequest($url, $oauth_header, $options = array())

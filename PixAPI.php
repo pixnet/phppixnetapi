@@ -533,7 +533,7 @@ class PixAPI
 
 	$request->setOptions($this->_http_options);
 
-	$request->setHeaders(array('Authorization' => $oauth_header));
+        $request->setHeaders(array('Authorization' => $oauth_header, 'Expect' => ''));
 	if (isset($options['post_params'])) {
 	    $request->setPostFields($options['post_params']);
 	}

@@ -284,7 +284,10 @@ class PixAPI
      */
     public function album_add_element($set_id, $file_path, $title, $description)
     {
-	return json_decode($this->http('http://emma.pixnet.cc/album/sets/' . intval($set_id) . '/elements', array('post_params' => array('title' => $title, 'description' => $description), 'files' => array('upload_file' => $file_path))));
+        return json_decode($this->http('http://emma.pixnet.cc/album/elements', array(
+            'post_params' => array('set_id' => intval($set_id), 'title' => $title, 'description' => $description),
+            'files' => array('upload_file' => $file_path)
+        )));
     }
 
     /**

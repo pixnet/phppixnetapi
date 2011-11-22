@@ -518,12 +518,12 @@ class PixAPI
 	    $first = false;
 	}
 
-        if (function_exists('http_get')) {
-            return $this->_httpRequest($url, $oauth_header, $options);
-        }
-
         if (function_exists('curl_init')) {
             return $this->_curl($url, $oauth_header, $options);
+        }
+
+        if (function_exists('http_get')) {
+            return $this->_httpRequest($url, $oauth_header, $options);
         }
 
         die('請安裝 curl 或 pecl-http');
